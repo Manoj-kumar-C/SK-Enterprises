@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #map-canvas{
+            
+            height: 40rem;
+            
+        }
+    </style>
+</head>
+<body>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4kf1ehO9J_uA1bXcp2ThdyaRxpnSuCmk&libraries=places"></script>
+    <div class="container">
+        <div id="map-canvas"></div>
+    </div>
+
+    <script>
+        var map;
+        var infowindow;
+        
+        function initialize() {
+  var pyrmont = new google.maps.LatLng(11.0168, 76.9558); // sample location to start with: Mumbai, India
+
+  map = new google.maps.Map(document.getElementById('map-canvas'), {
+    center: pyrmont,
+    zoom: 15
+  });
+
+  var request = {
+    location: pyrmont,
+    radius: 200,
+    types: ['hospital', 'health'] // this is where you set the map to get the hospitals and health related places
+  };
+  infowindow = new google.maps.InfoWindow();
+  var service = new google.maps.places.PlacesService(map);
+  service.nearbySearch(request, callback);
+}
+
+function callback(results, status) {
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    for (var i = 0; i < results.length; i++) {
+      createMarker(results[i]);
+    }
+  }
+}
+
+function createMarker(place) {
+  var placeLoc = place.geometry.location;
+  var marker = new google.maps.Marker({
+    map: map,
+    position: place.geometry.location
+  });
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.setContent(place.name);
+    infowindow.open(map, this);
+  });
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+</body>
+</html>
